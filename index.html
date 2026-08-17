@@ -138,7 +138,7 @@ footer a{color:var(--ink2)}
 <main id="top">
 <header>
   <div class="wrap hbar">
-    <a class="brand" href="#top"><span class="glyph">✦</span>agent-flow<span class="v">v0.1.0</span></a>
+    <a class="brand" href="#top"><span class="glyph">✦</span>agent-flow<span class="v">v0.2.3</span></a>
     <nav>
       <a href="#why" data-i18n="nav-why">Why</a>
       <a href="#gates" data-i18n="nav-gates">Gates</a>
@@ -231,15 +231,15 @@ footer a{color:var(--ink2)}
 
 <section id="pet">
   <div class="wrap">
-    <h2><span class="n">04</span><span data-i18n="pet-h">Desktop pet — the flow that follows you</span></h2>
+    <h2><span class="n">04</span><span data-i18n="pet-h">Desktop pet — a pixel cat that watches your flow</span></h2>
     <div class="petgrid">
-      <div class="petshot"><img src="shots/pet-dark.png" alt="AgentFlow desktop pet mini card"></div>
+      <div class="petshot"><img src="shots/pet-dark.png" alt="AgentFlow desktop pet pixel cat"></div>
       <div>
-        <p class="sub" data-i18n="pet-sub" style="margin-bottom:22px">A tiny always-on-top card: flow name, progress bar, next step. Click to expand into the full canvas window.</p>
+        <p class="sub" data-i18n="pet-sub" style="margin-bottom:22px">A pixel-art Tuxedo cat lives on your desktop and reflects the current flow state (idle / working / done / error). Right-click for size, coat, play area, low-power mode and more.</p>
         <ol class="petsteps">
-          <li><b data-i18n="pet-1-b">One file, one command</b> — <span data-i18n="pet-1-d">studio-pet/run-pet.sh (or double-click run-pet.command on macOS).</span></li>
-          <li><b data-i18n="pet-2-b">Zero new downloads</b> — <span data-i18n="pet-2-d">reuses the Electron runtime already installed by clawd-on-desk; the Studio server runs in-process.</span></li>
-          <li><b data-i18n="pet-3-b">Host it inside clawd</b> — <span data-i18n="pet-3-d">deep integration with the clawd desktop pet (IPC expand/collapse, LaunchAgent autostart) documented in HOST-WITH-CLAWD.md.</span></li>
+          <li><b data-i18n="pet-1-b">Three platforms, one command</b> — <span data-i18n="pet-1-d">studio-pet/run-pet.sh on macOS/Linux, run-pet.ps1 or run-pet.cmd on Windows; macOS double-click run-pet.command.</span></li>
+          <li><b data-i18n="pet-2-b">Optional runtime</b> — <span data-i18n="pet-2-d">the pet is optional; the CLI and browser Studio work without Electron. First launch can install the pinned runtime, or point AF_ELECTRON at an existing one.</span></li>
+          <li><b data-i18n="pet-3-b">Status bridge</b> — <span data-i18n="pet-3-d">polls the local Studio every 1.8s and maps flow progress to cat reactions; dragging never raises the Studio window.</span></li>
           <li><b data-i18n="pet-4-b">No Electron? No problem</b> — <span data-i18n="pet-4-d">everything except the floating window works in any browser via af studio, on macOS, Linux and Windows.</span></li>
         </ol>
       </div>
@@ -294,11 +294,11 @@ var I18N = {
     "studio-h":"Studio — a canvas over your files",
     "studio-sub":"af studio serves an interactive canvas on 127.0.0.1. Drag nodes, connect edges, pick branches, edit STEP.md inline — while the agent edits the same files in your terminal, the canvas refreshes live over SSE.",
     "studio-cap":"Bilingual UI and light/dark themes built in; every topology change is validated before it touches disk.",
-    "pet-h":"Desktop pet — the flow that follows you",
-    "pet-sub":"A tiny always-on-top card: flow name, progress bar, next step. Click to expand into the full canvas window.",
-    "pet-1-b":"One file, one command","pet-1-d":"studio-pet/run-pet.sh (or double-click run-pet.command on macOS).",
-    "pet-2-b":"Zero new downloads","pet-2-d":"reuses the Electron runtime already installed by clawd-on-desk; the Studio server runs in-process.",
-    "pet-3-b":"Host it inside clawd","pet-3-d":"deep integration with the clawd desktop pet (IPC expand/collapse, LaunchAgent autostart) documented in HOST-WITH-CLAWD.md.",
+    "pet-h":"Desktop pet — a pixel cat that watches your flow",
+    "pet-sub":"A pixel-art Tuxedo cat lives on your desktop and reflects the current flow state (idle / working / done / error). Right-click for size, coat, play area, low-power mode and more.",
+    "pet-1-b":"Three platforms, one command","pet-1-d":"studio-pet/run-pet.sh on macOS/Linux, run-pet.ps1 or run-pet.cmd on Windows; macOS double-click run-pet.command.",
+    "pet-2-b":"Optional runtime","pet-2-d":"the pet is optional; the CLI and browser Studio work without Electron. First launch can install the pinned runtime, or point AF_ELECTRON at an existing one.",
+    "pet-3-b":"Status bridge","pet-3-d":"polls the local Studio every 1.8s and maps flow progress to cat reactions; dragging never raises the Studio window.",
     "pet-4-b":"No Electron? No problem","pet-4-d":"everything except the floating window works in any browser via af studio, on macOS, Linux and Windows.",
     "inst-h":"Install in one line",
     "inst-sub":"Pure Node ESM, zero dependencies, Node ≥ 18. The installer also drops the agent skill into detected skill directories.",
@@ -332,11 +332,11 @@ var I18N = {
     "studio-h":"Studio——盖在你的文件上的画布",
     "studio-sub":"af studio 在 127.0.0.1 起一个交互画布：拖节点、连线选分支、内联编辑 STEP.md——代理在终端改同一批文件时，画布经 SSE 实时刷新。",
     "studio-cap":"内置中英双语与浅暗双主题；每次拓扑修改先校验再落盘。",
-    "pet-h":"桌面宠物——跟着你走的工作流",
-    "pet-sub":"常驻置顶迷你卡片：流程名、进度条、下一步。点击展开成完整画布窗口。",
-    "pet-1-b":"一个文件一条命令","pet-1-d":"studio-pet/run-pet.sh（macOS 也可双击 run-pet.command）。",
-    "pet-2-b":"零新增下载","pet-2-d":"自动复用 clawd-on-desk 已装的 Electron 运行时；Studio 服务进程内运行。",
-    "pet-3-b":"托管进 clawd","pet-3-d":"与 clawd 桌宠深度集成（IPC 展开/收起、LaunchAgent 自启）见 HOST-WITH-CLAWD.md。",
+    "pet-h":"桌面宠物——一只看着你流程跑的像素猫",
+    "pet-sub":"黑白像素猫常驻桌面，反映当前流程状态（空闲 / 进行中 / 完成 / 出错）。右键菜单可调大小、毛色、游玩区域与节能模式。",
+    "pet-1-b":"三平台一条命令","pet-1-d":"macOS/Linux 用 studio-pet/run-pet.sh，Windows 用 run-pet.ps1 或 run-pet.cmd；macOS 也可双击 run-pet.command。",
+    "pet-2-b":"可选运行时","pet-2-d":"桌宠是可选组件；CLI 与浏览器 Studio 不依赖 Electron。首次启动可安装固定版本，或用 AF_ELECTRON 指定已有运行时。",
+    "pet-3-b":"状态桥","pet-3-d":"每 1.8s 轮询本地 Studio 并把流程进度映射为猫的反应；拖动小宠不会把 Studio 窗口带到前台。",
     "pet-4-b":"没有 Electron 也能用","pet-4-d":"除悬浮窗外的一切功能走 af studio 浏览器模式，macOS / Linux / Windows 全支持。",
     "inst-h":"一行安装",
     "inst-sub":"纯 Node ESM、零依赖、Node ≥ 18。安装器还会把代理技能放进检测到的技能目录。",
