@@ -1,426 +1,494 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-theme="dark" data-lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AgentFlow — Markdown workflows for every coding agent</title>
-<meta name="description" content="AgentFlow (af): Markdown-first step workflows with deterministic logic gates, zero-dependency CLI, visual Studio canvas and a desktop pet — for ZCode, Claude Code, Codex CLI and any coding agent.">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<style>
-:root{
-  --bg:#0a0e0b; --bg2:#0e1410; --panel:#111913; --line:#1f2b22;
-  --ink:#e8f2ea; --ink2:#9fb3a4; --dim:#6b7f70;
-  --green:#7ce38b; --green2:#4ade80; --amber:#fbbf24; --cyan:#67e8f9;
-  --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
-  background-size:44px 44px;opacity:.28}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(900px 480px at 70% -10%,rgba(74,222,128,.09),transparent 60%),
-             radial-gradient(700px 420px at 0% 30%,rgba(103,232,249,.05),transparent 60%)}
-main{position:relative;z-index:1}
-a{color:var(--green2);text-decoration:none}
-a:hover{text-decoration:underline}
-.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
-code,kbd,.mono{font-family:var(--mono)}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#070b0a">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="AgentFlow — Markdown-first deterministic workflows, visual Studio, resumable runtime and desktop pet for any coding agent on macOS, Windows and Linux.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="AgentFlow — A workflow layer for coding agents">
+  <meta property="og:description" content="Markdown-first workflows. Deterministic gates. Visual Studio. Resumable runtime. Any coding agent, any desktop OS.">
+  <meta property="og:url" content="https://agentflow.kanghelyu.org/">
+  <meta property="og:image" content="https://agentflow.kanghelyu.org/assets/shots/engdark.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>AgentFlow — A workflow layer for coding agents</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    :root{
+      --bg:#070a09;--bg2:#0b100e;--surface:#0e1512;--surface2:#121b17;
+      --glass:rgba(14,21,18,.72);--glass-strong:rgba(13,20,17,.92);
+      --text:#eef7f0;--muted:#93a89a;--subtle:#677a6d;
+      --line:rgba(173,236,187,.12);--line2:rgba(173,236,187,.22);
+      --mint:#9df6ae;--mint2:#5ee883;--cyan:#7de8f5;--amber:#ffd87c;--rose:#ff8aa0;
+      --shadow:0 32px 100px rgba(0,0,0,.4);--shadow-soft:0 18px 50px rgba(0,0,0,.18);
+      --sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      --mono:"SFMono-Regular","Cascadia Code","Roboto Mono",Consolas,monospace;
+      --radius:28px;--mx:50%;--my:20%;
+    }
+    html[data-theme="light"]{
+      --bg:#f4f8f5;--bg2:#edf4ef;--surface:#ffffff;--surface2:#f8fbf9;
+      --glass:rgba(255,255,255,.74);--glass-strong:rgba(255,255,255,.94);
+      --text:#122018;--muted:#5b7162;--subtle:#809187;
+      --line:rgba(34,100,52,.11);--line2:rgba(34,100,52,.2);
+      --mint:#168f45;--mint2:#0c7d37;--cyan:#087f91;--amber:#a66a00;--rose:#c33a58;
+      --shadow:0 32px 90px rgba(36,77,47,.13);--shadow-soft:0 18px 48px rgba(36,77,47,.08)
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:100px}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden;text-rendering:optimizeLegibility}
+    body::before{content:"";position:fixed;inset:0;z-index:-4;pointer-events:none;background:
+      radial-gradient(900px 650px at var(--mx) var(--my),rgba(100,242,142,.075),transparent 62%),
+      radial-gradient(850px 620px at 82% -8%,rgba(102,231,245,.08),transparent 61%),
+      linear-gradient(180deg,var(--bg),var(--bg2) 48%,var(--bg));}
+    body::after{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.5;background-image:
+      linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:52px 52px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 72%)}
+    a{color:inherit;text-decoration:none}button{font:inherit}img{display:block;max-width:100%}code,pre,.mono{font-family:var(--mono)}
+    ::selection{background:rgba(157,246,174,.25);color:var(--text)}
+    .wrap{width:min(1200px,calc(100% - 44px));margin-inline:auto}.section{padding:112px 0;position:relative}.section-tight{padding:78px 0}
+    .eyebrow{display:flex;align-items:center;gap:9px;font:650 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mint)}
+    .eyebrow::before{content:"";width:18px;height:1px;background:currentColor;box-shadow:10px 0 18px currentColor}
+    .display{font-size:clamp(42px,5.2vw,70px);line-height:.99;letter-spacing:-.055em;margin:13px 0 0;font-weight:760}
+    .lede{color:var(--muted);font-size:18px;max-width:650px;margin:0}.gradient{background:linear-gradient(110deg,var(--mint) 8%,#d4ffd9 45%,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+    html[data-theme="light"] .gradient{background:linear-gradient(110deg,#0d8c3c,#178b58 48%,#087d91);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .section-head{display:grid;grid-template-columns:.95fr 1.05fr;gap:56px;align-items:end;margin-bottom:48px}
+    .section-head .lede{justify-self:end}
+    .scroll-progress{position:fixed;z-index:300;left:0;top:0;height:2px;width:100%;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--mint2),var(--cyan));box-shadow:0 0 16px rgba(94,232,131,.45)}
 
-/* header */
-header{position:sticky;top:0;z-index:50;background:rgba(10,14,11,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.hbar{display:flex;align-items:center;gap:18px;padding:14px 0}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-weight:700;color:var(--ink);font-size:15px}
-.brand:hover{text-decoration:none}
-.brand .glyph{color:var(--green);font-size:17px}
-.brand .v{color:var(--dim);font-size:11px;font-weight:400}
-nav{display:flex;gap:16px;margin-left:auto;font-size:13.5px}
-nav a{color:var(--ink2)}
-nav a:hover{color:var(--green2);text-decoration:none}
-.lang{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.lang button{background:none;border:none;color:var(--ink2);padding:5px 10px;font-size:12px;cursor:pointer;font-family:var(--mono)}
-.lang button.on{background:var(--green);color:#07130a;font-weight:700}
-.gh{border:1px solid var(--line);border-radius:8px;padding:5px 12px;font-size:13px;color:var(--ink);font-family:var(--mono)}
-.gh:hover{border-color:var(--green2);color:var(--green2);text-decoration:none}
+    /* nav */
+    .nav-shell{position:fixed;z-index:200;top:14px;left:0;right:0;padding:0 14px;pointer-events:none;transition:transform .35s ease}
+    .nav{max-width:1200px;margin:auto;display:flex;align-items:center;gap:18px;padding:10px 11px 10px 15px;border:1px solid var(--line);border-radius:18px;background:color-mix(in srgb,var(--glass-strong) 80%,transparent);backdrop-filter:blur(22px) saturate(145%);box-shadow:0 14px 48px rgba(0,0,0,.12);pointer-events:auto;transition:.3s ease}
+    .nav.scrolled{border-color:var(--line2);box-shadow:0 16px 58px rgba(0,0,0,.18)}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:760;letter-spacing:-.025em;white-space:nowrap}.brand-mark{width:31px;height:31px;border-radius:9px;display:grid;place-items:center;border:1px solid var(--line2);background:linear-gradient(145deg,rgba(157,246,174,.13),rgba(125,232,245,.07));color:var(--mint);font:700 13px var(--mono);box-shadow:inset 0 0 20px rgba(157,246,174,.04)}
+    .nav-links{display:flex;align-items:center;gap:3px;margin-left:auto}.nav-links a,.nav-control{border:0;background:transparent;color:var(--muted);border-radius:10px;padding:8px 10px;font-size:13px;cursor:pointer;transition:.2s ease}.nav-links a:hover,.nav-control:hover{color:var(--text);background:var(--line)}
+    .nav-actions{display:flex;gap:4px;padding-left:8px;border-left:1px solid var(--line)}
+    .github-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 11px!important;border:1px solid var(--line)!important;background:var(--surface2)!important;color:var(--text)!important}
+    .github-btn svg{width:15px;height:15px}.menu-btn{display:none}
 
-/* hero */
-.hero{padding:72px 0 48px;display:grid;grid-template-columns:1.02fr .98fr;gap:44px;align-items:center}
-.kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;color:var(--green);text-transform:uppercase}
-h1{font-family:var(--mono);font-size:clamp(30px,4.6vw,46px);line-height:1.14;margin:14px 0 8px;letter-spacing:-.01em}
-h1 .t{color:var(--green)}
-.hero p.lead{color:var(--ink2);font-size:16.5px;max-width:46ch;margin:10px 0 22px}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;padding:11px 18px;border-radius:10px;border:1px solid var(--green2);background:var(--green);color:#07130a;font-weight:700}
-.btn:hover{background:var(--green2);text-decoration:none}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn.ghost:hover{border-color:var(--green2);color:var(--green2)}
-.agents{display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:var(--dim);font-size:12.5px;font-family:var(--mono)}
-.agents span{border:1px solid var(--line);border-radius:999px;padding:3px 11px;color:var(--ink2)}
+    /* hero */
+    .hero{min-height:100svh;display:flex;align-items:center;padding:138px 0 78px;position:relative}
+    .hero::before{content:"";position:absolute;left:50%;top:7%;width:760px;height:760px;transform:translateX(-10%);border-radius:50%;background:radial-gradient(circle,rgba(87,238,130,.09),transparent 66%);filter:blur(12px);z-index:-1}
+    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:62px;align-items:center}
+    .version-pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line2);background:var(--glass);padding:7px 10px;border-radius:999px;color:var(--muted);font:12px var(--mono);box-shadow:var(--shadow-soft)}
+    .version-pill .live{width:7px;height:7px;border-radius:50%;background:var(--mint2);box-shadow:0 0 0 5px rgba(94,232,131,.09);animation:pulse 2.2s ease-in-out infinite}.version-pill b{color:var(--text);font-weight:600}
+    @keyframes pulse{50%{box-shadow:0 0 0 8px rgba(94,232,131,0)}}
+    .hero h1{font-size:clamp(57px,7.5vw,98px);line-height:.91;letter-spacing:-.073em;margin:22px 0 25px;font-weight:780;max-width:810px}
+    .hero-copy{font-size:19px;color:var(--muted);max-width:680px;margin:0 0 30px}.hero-copy strong{color:var(--text);font-weight:620}
+    .actions{display:flex;flex-wrap:wrap;gap:11px}.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:11px 16px;border-radius:12px;border:1px solid var(--line2);font-size:14px;font-weight:730;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease,background .2s ease}.btn:hover{transform:translateY(-2px)}.btn.primary{background:var(--mint);color:#071009;border-color:transparent;box-shadow:0 14px 36px rgba(92,226,124,.18)}html[data-theme="light"] .btn.primary{color:white}.btn.primary:hover{box-shadow:0 18px 45px rgba(92,226,124,.24)}.btn.secondary{background:var(--glass);color:var(--text);backdrop-filter:blur(12px)}
+    .hero-note{display:flex;align-items:center;gap:10px;color:var(--subtle);font:12px var(--mono);margin-top:18px}.hero-note span{width:4px;height:4px;background:var(--subtle);border-radius:50%}
 
-/* terminal */
-.term{background:#070b08;border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 70px rgba(0,0,0,.5),0 0 0 1px rgba(124,227,139,.05);overflow:hidden}
-.tbar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--bg2)}
-.dot{width:11px;height:11px;border-radius:50%}
-.dot.r{background:#f87171}.dot.y{background:#fbbf24}.dot.g{background:#34d399}
-.tbar .t{margin-left:8px;color:var(--dim);font-size:12px;font-family:var(--mono)}
-.tbody{padding:18px 18px 20px;font-family:var(--mono);font-size:13.2px;line-height:1.85;min-height:262px;white-space:pre-wrap;color:var(--ink2)}
-.tbody .p{color:var(--green)}
-.tbody .c{color:var(--amber)}
-.tbody .k{color:var(--cyan)}
-.caret{display:inline-block;width:8px;height:15px;background:var(--green);vertical-align:-2px;animation:blink 1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
+    /* workflow demo */
+    .flow-demo{position:relative;perspective:1100px}.demo-window{position:relative;border:1px solid var(--line2);border-radius:24px;background:linear-gradient(180deg,rgba(18,28,23,.9),rgba(8,13,11,.95));box-shadow:var(--shadow);overflow:hidden;transform:rotateY(-2.5deg) rotateX(1.5deg);transition:transform .5s cubic-bezier(.2,.8,.2,1)}html[data-theme="light"] .demo-window{background:linear-gradient(180deg,#fff,#f2f7f4)}.flow-demo:hover .demo-window{transform:none}
+    .demo-top{height:47px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 15px;gap:8px}.traffic{display:flex;gap:6px}.traffic i{width:8px;height:8px;border-radius:50%;background:#ff6f7c}.traffic i:nth-child(2){background:#ffd36c}.traffic i:nth-child(3){background:#58da7c}.demo-top .title{font:11px var(--mono);color:var(--subtle);margin-left:8px}.demo-top .sync{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--mint);font:10px var(--mono)}.sync i{width:6px;height:6px;border-radius:50%;background:var(--mint2);box-shadow:0 0 10px var(--mint2)}
+    .demo-canvas{position:relative;height:500px;background-image:radial-gradient(var(--line2) .75px,transparent .75px);background-size:22px 22px;overflow:hidden}.demo-canvas::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 52% 40%,transparent 0,rgba(6,10,8,.22) 72%);pointer-events:none}html[data-theme="light"] .demo-canvas::after{background:radial-gradient(ellipse at 52% 40%,transparent 0,rgba(235,244,238,.28) 75%)}
+    .edge-svg{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible}.edge-line{fill:none;stroke:url(#edgeGrad);stroke-width:2;stroke-linecap:round;filter:drop-shadow(0 0 4px rgba(103,232,245,.2));stroke-dasharray:8 8;animation:dash 8s linear infinite}@keyframes dash{to{stroke-dashoffset:-128}}
+    .mini-node{position:absolute;z-index:2;width:145px;padding:12px 13px 13px;border:1px solid var(--line2);border-radius:13px;background:var(--glass-strong);backdrop-filter:blur(10px);box-shadow:0 15px 32px rgba(0,0,0,.18);animation:nodefloat 6s ease-in-out infinite}.mini-node:nth-of-type(2){animation-delay:-2s}.mini-node:nth-of-type(3){animation-delay:-3.5s}.mini-node:nth-of-type(4){animation-delay:-1s}.mini-node:nth-of-type(5){animation-delay:-4.2s}@keyframes nodefloat{50%{transform:translateY(-3px)}}
+    .mini-node small{display:block;font:9px var(--mono);letter-spacing:.08em;color:var(--mint);margin-bottom:5px}.mini-node b{display:block;font-size:13px;letter-spacing:-.015em}.mini-node span{display:block;color:var(--subtle);font-size:10px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mini-node.plan{left:6%;top:16%}.mini-node.build{left:37%;top:16%}.mini-node.gate{left:66%;top:16%;border-color:rgba(255,216,124,.28)}.mini-node.gate small{color:var(--amber)}.mini-node.fix{left:28%;top:62%}.mini-node.ship{left:66%;top:62%;border-color:rgba(125,232,245,.25)}.mini-node.ship small{color:var(--cyan)}
+    .branch-tag{position:absolute;z-index:3;padding:3px 7px;border-radius:7px;background:var(--surface);border:1px solid var(--line);font:9px var(--mono);color:var(--muted)}.branch-tag.yes{left:73%;top:48%}.branch-tag.no{left:49%;top:48%}
+    .demo-status{position:absolute;z-index:4;left:16px;right:16px;bottom:15px;display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:rgba(8,13,11,.77);backdrop-filter:blur(12px);font:10px var(--mono);color:#d9e9dc}html[data-theme="light"] .demo-status{background:rgba(255,255,255,.86);color:var(--text)}.demo-status .ready{color:var(--mint)}.demo-status .rev{margin-left:auto;color:var(--subtle)}
+    .float-badge{position:absolute;z-index:5;border:1px solid var(--line2);background:var(--glass-strong);backdrop-filter:blur(14px);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow-soft);font:11px var(--mono);color:var(--muted)}.float-badge strong{color:var(--text);font-weight:600}.float-badge.a{right:-24px;top:56px;animation:badgefloat 5s ease-in-out infinite}.float-badge.b{left:-26px;bottom:56px;animation:badgefloat 6.5s ease-in-out infinite reverse}@keyframes badgefloat{50%{transform:translateY(8px)}}
 
-/* sections */
-section{padding:64px 0;border-top:1px solid var(--line)}
-h2{font-family:var(--mono);font-size:24px;letter-spacing:-.01em;margin-bottom:6px}
-h2 .n{color:var(--dim);font-weight:400;margin-right:10px}
-.sub{color:var(--ink2);max-width:64ch;margin-bottom:30px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
-.card:hover{border-color:rgba(124,227,139,.4)}
-.card .ic{font-size:20px;margin-bottom:10px}
-.card h3{font-size:15.5px;font-family:var(--mono);margin-bottom:8px}
-.card p{color:var(--ink2);font-size:13.8px}
+    /* compatibility */
+    .compat-shell{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg2) 60%,transparent);overflow:hidden}.compat-title{text-align:center;color:var(--subtle);font:11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:25px 0 7px}.marquee{display:flex;width:max-content;animation:marquee 28s linear infinite;padding:15px 0 28px}.marquee:hover{animation-play-state:paused}@keyframes marquee{to{transform:translateX(-50%)}}.marquee-set{display:flex;align-items:center;gap:12px;padding-right:12px}.agent-chip{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--glass);border-radius:13px;padding:10px 13px;min-width:max-content;color:var(--muted);font-size:13px}.agent-chip b{color:var(--text);font-weight:650}.agent-icon{width:25px;height:25px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);display:grid;place-items:center;color:var(--mint);font:700 10px var(--mono)}
 
-/* gates */
-.gates{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.gate{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;font-family:var(--mono)}
-.gate .n{color:var(--green);font-size:14px;font-weight:700}
-.gate .f{color:var(--cyan);font-size:12px;margin-top:6px}
-.gate .d{color:var(--dim);font-size:11.5px;margin-top:6px;line-height:1.5}
-.truth{margin-top:18px;background:#070b08;border:1px solid var(--line);border-radius:12px;padding:16px;font-family:var(--mono);font-size:12.5px;color:var(--ink2);overflow-x:auto}
-.truth b{color:var(--amber);font-weight:400}
-.truth .on{color:var(--green)}
+    /* bento */
+    .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 88%,transparent),color-mix(in srgb,var(--surface2) 75%,transparent));padding:27px;min-height:260px;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s ease,box-shadow .35s ease}.card::after{content:"";position:absolute;width:260px;height:220px;border-radius:50%;right:-130px;bottom:-150px;background:radial-gradient(circle,rgba(157,246,174,.1),transparent 68%);pointer-events:none}.card:hover{transform:translateY(-5px);border-color:var(--line2);box-shadow:var(--shadow-soft)}.card.span7{grid-column:span 7}.card.span5{grid-column:span 5}.card.span4{grid-column:span 4}.card.span8{grid-column:span 8}
+    .card-icon{width:43px;height:43px;border:1px solid var(--line2);border-radius:12px;background:rgba(157,246,174,.055);display:grid;place-items:center;color:var(--mint);font:700 13px var(--mono);margin-bottom:54px}.card h3{font-size:22px;line-height:1.15;letter-spacing:-.03em;margin:0 0 9px}.card p{margin:0;color:var(--muted);font-size:14px;max-width:56ch}.card-kicker{font:10px var(--mono);color:var(--subtle);margin-top:14px}
+    .md-stack{position:absolute;right:24px;top:25px;width:210px;height:122px}.md-sheet{position:absolute;width:150px;height:96px;border:1px solid var(--line2);border-radius:10px;background:var(--glass-strong);padding:12px;box-shadow:0 14px 35px rgba(0,0,0,.13)}.md-sheet:nth-child(1){right:0;top:0;transform:rotate(3deg)}.md-sheet:nth-child(2){right:28px;top:18px;transform:rotate(-2deg)}.md-sheet:nth-child(3){right:55px;top:36px}.md-sheet i{display:block;height:4px;border-radius:3px;background:var(--line2);margin-bottom:7px}.md-sheet i:first-child{width:47%;background:var(--mint)}.md-sheet i:nth-child(2){width:76%}.md-sheet i:nth-child(3){width:64%}.md-sheet i:nth-child(4){width:82%}
+    .gate-grid{position:absolute;right:24px;top:27px;display:grid;grid-template-columns:repeat(4,43px);gap:7px}.gate{height:36px;border:1px solid rgba(125,232,245,.16);border-radius:9px;background:rgba(125,232,245,.055);display:grid;place-items:center;font:9px var(--mono);color:var(--cyan);transition:.25s}.card:hover .gate{transform:translateY(-2px)}
+    .runtime-lines{position:absolute;right:22px;top:25px;width:210px;font:10px/1.8 var(--mono);color:var(--subtle);border-left:1px solid var(--line2);padding-left:14px}.runtime-lines b{color:var(--mint);font-weight:500}.runtime-lines em{color:var(--cyan);font-style:normal}.runtime-lines .warn{color:var(--amber)}
+    .os-row{position:absolute;right:22px;top:27px;display:flex;gap:7px}.os{height:42px;padding:0 11px;border-radius:11px;border:1px solid var(--line);display:flex;align-items:center;gap:7px;font:10px var(--mono);color:var(--muted);background:var(--glass)}.os i{width:7px;height:7px;border-radius:50%;background:var(--mint2);box-shadow:0 0 10px rgba(94,232,131,.55)}
+    .portable-ring{position:absolute;right:-24px;top:-20px;width:190px;height:190px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center}.portable-ring::before,.portable-ring::after{content:"";position:absolute;border:1px solid var(--line);border-radius:50%}.portable-ring::before{inset:23px}.portable-ring::after{inset:48px}.portable-ring span{font:11px var(--mono);color:var(--mint)}
 
-/* gallery */
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.tabs button{background:none;border:1px solid var(--line);color:var(--ink2);border-radius:999px;padding:6px 14px;font-size:12.5px;cursor:pointer;font-family:var(--mono)}
-.tabs button.on{background:var(--green);border-color:var(--green);color:#07130a;font-weight:700}
-.shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#070b08}
-.shot img{display:block;width:100%;height:auto}
-.cap{color:var(--dim);font-size:12.5px;margin-top:10px;font-family:var(--mono)}
+    /* studio */
+    .studio-stage{position:relative}.studio-frame{position:relative;border:1px solid var(--line2);border-radius:28px;padding:10px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));box-shadow:var(--shadow);overflow:hidden}.browser-bar{height:42px;display:flex;align-items:center;gap:7px;padding:0 9px}.browser-bar i{width:8px;height:8px;border-radius:50%;background:#ff7180}.browser-bar i:nth-child(2){background:#ffd376}.browser-bar i:nth-child(3){background:#62db82}.browser-url{margin-left:12px;height:25px;min-width:240px;max-width:410px;flex:1;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;padding:0 10px;color:var(--subtle);font:10px var(--mono)}.browser-url span{color:var(--mint);margin-right:6px}.studio-shot{border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:zoom-in;position:relative;background:var(--surface)}.studio-shot img{width:100%;height:auto;transition:transform .65s cubic-bezier(.2,.8,.2,1)}.studio-frame:hover .studio-shot img{transform:scale(1.008)}
+    .studio-controls{display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap}.seg{display:flex;gap:3px;border:1px solid var(--line);padding:3px;border-radius:12px;background:var(--glass)}.seg button{border:0;background:transparent;color:var(--muted);font-size:12px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:.2s}.seg button.on{background:var(--surface2);color:var(--text);box-shadow:0 4px 13px rgba(0,0,0,.11)}.studio-meta{margin-left:auto;color:var(--subtle);font:11px var(--mono)}
+    .feature-float{position:absolute;z-index:4;max-width:215px;border:1px solid var(--line2);border-radius:14px;background:var(--glass-strong);backdrop-filter:blur(16px);padding:11px 12px;box-shadow:var(--shadow-soft)}.feature-float b{display:block;font-size:12px;margin-bottom:2px}.feature-float span{font-size:10px;color:var(--muted)}.feature-float.one{left:-22px;top:28%}.feature-float.two{right:-23px;top:52%}
+    .studio-list{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.studio-list div{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--glass);font-size:12px;color:var(--muted)}.studio-list b{display:block;color:var(--text);margin-bottom:3px;font-size:13px}
 
-/* pet */
-.petgrid{display:grid;grid-template-columns:340px 1fr;gap:36px;align-items:center}
-.petshot{border:1px solid var(--line);border-radius:14px;background:#070b08;padding:10px}
-.petshot img{display:block;width:100%;border-radius:8px}
-.petsteps{counter-reset:s;list-style:none}
-.petsteps li{counter-increment:s;position:relative;padding:0 0 18px 40px;color:var(--ink2);font-size:14.5px}
-.petsteps li::before{content:counter(s);position:absolute;left:0;top:1px;width:26px;height:26px;border:1px solid var(--green2);color:var(--green);border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-size:12.5px}
-.petsteps b{color:var(--ink)}
+    /* runtime */
+    .runtime-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:24px;align-items:stretch}.terminal{border:1px solid var(--line2);border-radius:24px;background:#070b09;color:#dce9df;overflow:hidden;box-shadow:var(--shadow-soft);min-height:465px}.termbar{height:46px;display:flex;align-items:center;gap:6px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.07)}.termbar i{width:8px;height:8px;border-radius:50%;background:#ff7481}.termbar i:nth-child(2){background:#ffd36f}.termbar i:nth-child(3){background:#5cdb80}.termbar span{margin-left:auto;color:#67766c;font:10px var(--mono)}.termcode{padding:22px;font:12px/1.82 var(--mono)}.t-muted{color:#63756a}.t-prompt{color:#8ff5a3}.t-cyan{color:#7de8f5}.t-amber{color:#ffd87c}.t-ok{color:#7bef92}.t-rose{color:#ff8aa0}.cursor{display:inline-block;width:7px;height:14px;background:#9df6ae;vertical-align:-2px;animation:blink 1.05s steps(2,end) infinite}@keyframes blink{50%{opacity:0}}
+    .runtime-points{display:grid;grid-template-columns:1fr 1fr;gap:13px}.runtime-point{border:1px solid var(--line);border-radius:20px;padding:22px;background:var(--glass);min-height:184px;transition:.3s}.runtime-point:hover{border-color:var(--line2);transform:translateY(-3px)}.runtime-point strong{display:inline-grid;place-items:center;width:32px;height:32px;border:1px solid var(--line2);border-radius:10px;color:var(--mint);font:11px var(--mono);margin-bottom:33px}.runtime-point h3{font-size:16px;margin:0 0 7px}.runtime-point p{font-size:12.5px;color:var(--muted);margin:0}
 
-/* install */
-.inst{background:#070b08;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-family:var(--mono);font-size:13.5px}
-.inst .row{display:flex;align-items:center;gap:14px;padding:15px 18px;border-bottom:1px solid var(--line)}
-.inst .row:last-child{border-bottom:none}
-.inst .os{color:var(--amber);width:110px;flex:none;font-size:12.5px}
-.inst code{color:var(--ink);flex:1}
-.copy{background:none;border:1px solid var(--line);color:var(--ink2);border-radius:7px;padding:4px 10px;font-size:11.5px;cursor:pointer;font-family:var(--mono)}
-.copy:hover{color:var(--green2);border-color:var(--green2)}
-.note{color:var(--dim);font-size:12.5px;margin-top:14px;font-family:var(--mono)}
+    /* pet */
+    .pet-panel{position:relative;display:grid;grid-template-columns:.9fr 1.1fr;gap:62px;align-items:center;border:1px solid var(--line);border-radius:34px;background:
+      radial-gradient(600px 350px at 15% 58%,rgba(255,99,128,.085),transparent 67%),
+      radial-gradient(530px 330px at 85% 22%,rgba(157,246,174,.07),transparent 67%),var(--glass);padding:50px 55px;overflow:hidden}.pet-visual{position:relative;min-height:440px;display:grid;place-items:center}.pet-visual::before{content:"";position:absolute;width:330px;height:330px;border-radius:50%;background:radial-gradient(circle,rgba(255,116,145,.12),transparent 66%);filter:blur(4px)}.pet-img{position:relative;z-index:2;height:390px;width:auto;filter:drop-shadow(0 25px 35px rgba(0,0,0,.32));animation:petbob 5s ease-in-out infinite}@keyframes petbob{50%{transform:translateY(-9px) rotate(1deg)}}.pet-status{position:absolute;z-index:3;right:9%;bottom:14%;display:flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:12px;background:var(--glass-strong);padding:9px 11px;box-shadow:var(--shadow-soft);font:11px var(--mono)}.pet-status i{width:7px;height:7px;border-radius:50%;background:var(--mint2);box-shadow:0 0 10px currentColor}.pet-copy h2{font-size:clamp(42px,5vw,68px);line-height:.98;letter-spacing:-.055em;margin:13px 0 18px}.pet-copy>p{font-size:17px;color:var(--muted);margin:0 0 25px}.pet-features{display:flex;gap:8px;flex-wrap:wrap}.pet-features span{border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--muted);font:11px var(--mono);background:var(--glass)}.pet-credit{margin-top:20px!important;padding-top:18px;border-top:1px solid var(--line);font-size:12px!important;line-height:1.7;color:var(--subtle)!important}.pet-credit a{color:var(--mint);text-decoration:none;font-weight:650}.pet-credit a:hover{text-decoration:underline}.pet-credit strong{color:var(--text)}
 
-footer{border-top:1px solid var(--line);padding:34px 0 44px;color:var(--dim);font-size:13px;font-family:var(--mono)}
-footer .fbar{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
-footer a{color:var(--ink2)}
+    /* install */
+    .install-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:26px;align-items:start}.install-lead{position:sticky;top:110px}.install-lead p{color:var(--muted);font-size:17px}.install-checks{display:grid;gap:10px;margin-top:25px}.install-check{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:13px}.install-check i{width:20px;height:20px;border-radius:7px;display:grid;place-items:center;background:rgba(157,246,174,.08);border:1px solid var(--line);color:var(--mint);font:10px var(--mono);font-style:normal;flex:0 0 auto}.install-card{border:1px solid var(--line2);border-radius:27px;background:var(--surface);overflow:hidden;box-shadow:var(--shadow-soft)}.install-tabs{display:flex;padding:8px;border-bottom:1px solid var(--line);gap:4px;overflow:auto}.install-tab{border:0;background:transparent;color:var(--muted);padding:9px 11px;border-radius:9px;font-size:12px;cursor:pointer;white-space:nowrap}.install-tab.on{background:var(--surface2);color:var(--text)}.install-pane{padding:25px}.install-pane h3{font-size:20px;margin:0 0 7px}.install-pane>p{font-size:13px;color:var(--muted);margin:0 0 18px}.repo-copy{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:14px;padding:12px 13px;background:#080c0a;color:#dce9df}.repo-copy code{font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.copy-btn{margin-left:auto;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.055);color:#b8c8bc;border-radius:8px;padding:6px 9px;cursor:pointer;font-size:11px}.agent-prompt{margin-top:10px;color:var(--subtle);font:11px var(--mono)}.codebox{border:1px solid var(--line);border-radius:14px;background:#080c0a;color:#dce9df;overflow:hidden}.codehead{display:flex;align-items:center;height:36px;border-bottom:1px solid rgba(255,255,255,.07);padding:0 11px;color:#6f8075;font:10px var(--mono)}.codehead button{margin-left:auto}.codebox pre{margin:0;padding:15px;white-space:pre-wrap;overflow:auto;font:11.5px/1.75 var(--mono)}.requirements{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.requirements span{font:10px var(--mono);color:var(--subtle);border:1px solid var(--line);border-radius:8px;padding:5px 7px}
 
-@media (max-width:880px){
-  .hero{grid-template-columns:1fr;padding-top:48px}
-  .cards,.gates{grid-template-columns:1fr 1fr}
-  .petgrid{grid-template-columns:1fr}
-  nav{display:none}
-}
-@media (max-width:560px){.cards,.gates{grid-template-columns:1fr}}
-</style>
+    /* CTA/footer */
+    .cta{position:relative;overflow:hidden;border:1px solid var(--line2);border-radius:34px;background:linear-gradient(135deg,rgba(157,246,174,.08),rgba(125,232,245,.035) 45%,var(--surface));padding:48px;display:flex;justify-content:space-between;align-items:center;gap:30px}.cta::after{content:"af";position:absolute;right:5%;bottom:-42%;font:800 260px/1 var(--mono);color:rgba(157,246,174,.035);pointer-events:none}.cta h2{font-size:clamp(37px,4.5vw,58px);line-height:1;letter-spacing:-.05em;margin:10px 0 12px;position:relative;z-index:2}.cta p{color:var(--muted);margin:0;position:relative;z-index:2}.cta .actions{position:relative;z-index:2;flex:0 0 auto}
+    footer{padding:32px 0 48px;color:var(--muted);font-size:12px}.footer-row{border-top:1px solid var(--line);padding-top:25px;display:flex;justify-content:space-between;gap:24px;align-items:center}.footer-links{display:flex;gap:16px;flex-wrap:wrap}.footer-links a:hover{color:var(--text)}
+
+    /* modal/reveal */
+    .lightbox{position:fixed;z-index:500;inset:0;display:none;place-items:center;padding:28px;background:rgba(3,6,5,.88);backdrop-filter:blur(16px)}.lightbox.open{display:grid}.lightbox img{max-width:min(96vw,1900px);max-height:90vh;border-radius:16px;box-shadow:0 35px 100px rgba(0,0,0,.55)}.lightbox button{position:absolute;right:20px;top:20px;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:white;font-size:22px;cursor:pointer}
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity .78s ease,transform .78s cubic-bezier(.2,.8,.2,1)}.reveal.in{opacity:1;transform:none}.stagger>*{opacity:0;transform:translateY(14px);animation:heroIn .8s cubic-bezier(.2,.8,.2,1) forwards}.stagger>*:nth-child(1){animation-delay:.04s}.stagger>*:nth-child(2){animation-delay:.11s}.stagger>*:nth-child(3){animation-delay:.18s}.stagger>*:nth-child(4){animation-delay:.25s}.stagger>*:nth-child(5){animation-delay:.32s}@keyframes heroIn{to{opacity:1;transform:none}}
+    .lang-zh{display:none}html[data-lang="zh"] .lang-en{display:none!important}html[data-lang="zh"] .lang-zh{display:initial}html[data-lang="zh"] div.lang-zh,html[data-lang="zh"] p.lang-zh{display:block}
+
+    @media(max-width:980px){
+      .hero-grid,.section-head,.runtime-grid,.pet-panel,.install-grid{grid-template-columns:1fr}.hero{min-height:auto;padding-top:145px}.hero-grid{gap:48px}.flow-demo{max-width:760px}.section-head .lede{justify-self:start}.feature-float{display:none}.studio-list{grid-template-columns:1fr 1fr}.install-lead{position:static}.card.span7,.card.span5,.card.span4,.card.span8{grid-column:span 12}.md-stack,.gate-grid,.runtime-lines,.os-row{opacity:.75}.pet-panel{padding:42px}.pet-visual{order:2}.pet-copy{order:1}.nav-links{display:none}.menu-btn{display:block}.nav.open .nav-links{display:flex;position:absolute;left:14px;right:14px;top:61px;flex-direction:column;align-items:stretch;background:var(--glass-strong);border:1px solid var(--line2);border-radius:16px;padding:8px;backdrop-filter:blur(20px);box-shadow:var(--shadow-soft)}.nav.open .nav-links a{padding:11px 12px}
+    }
+    @media(max-width:680px){
+      .wrap{width:min(100% - 28px,1200px)}.section{padding:82px 0}.section-tight{padding:58px 0}.display{font-size:43px}.hero h1{font-size:55px}.hero-copy{font-size:17px}.float-badge{display:none}.demo-canvas{height:420px}.mini-node{width:118px;padding:10px}.mini-node.plan{left:4%}.mini-node.build{left:35%}.mini-node.gate{left:65%}.mini-node.fix{left:18%;top:61%}.mini-node.ship{left:62%;top:61%}.demo-status{font-size:9px}.branch-tag{display:none}.compat-title{padding-inline:18px}.card{padding:23px;min-height:245px}.card-icon{margin-bottom:70px}.md-stack{right:-35px;transform:scale(.82)}.gate-grid{right:10px;grid-template-columns:repeat(4,36px);gap:5px}.gate{height:31px;font-size:8px}.runtime-lines{right:-10px;transform:scale(.86);transform-origin:top right}.os-row{right:12px}.os{padding:0 8px}.portable-ring{opacity:.6}.studio-meta{width:100%;margin-left:0}.studio-list{grid-template-columns:1fr}.browser-url{min-width:0}.runtime-points{grid-template-columns:1fr}.pet-panel{padding:30px 22px}.pet-visual{min-height:360px}.pet-img{height:330px}.pet-status{right:2%;bottom:11%}.install-pane{padding:19px}.cta{padding:32px 25px;align-items:flex-start;flex-direction:column}.footer-row{align-items:flex-start;flex-direction:column}.nav-shell{top:8px;padding:0 8px}.nav-actions .github-btn span{display:none}.brand-word{display:none}.hero-note{align-items:flex-start}.hero-note span{margin-top:8px;flex:0 0 auto}
+    }
+    @media(max-width:430px){.hero h1{font-size:48px}.demo-canvas{height:390px}.mini-node{width:106px}.mini-node.build{left:34%}.mini-node.gate{left:65%}.mini-node.ship{left:62%}.demo-status .rev{display:none}.nav-control.lang{padding-inline:7px}.pet-img{height:300px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.reveal,.stagger>*{opacity:1!important;transform:none!important}.marquee{animation:none}.flow-demo .demo-window{transform:none}}
+  </style>
 </head>
 <body>
-<main id="top">
-<header>
-  <div class="wrap hbar">
-    <a class="brand" href="#top"><span class="glyph">✦</span>agent-flow<span class="v">v0.2.3</span></a>
-    <nav>
-      <a href="#why" data-i18n="nav-why">Why</a>
-      <a href="#gates" data-i18n="nav-gates">Gates</a>
-      <a href="#studio" data-i18n="nav-studio">Studio</a>
-      <a href="#pet" data-i18n="nav-pet">Pet</a>
-      <a href="#install" data-i18n="nav-install">Install</a>
-    </nav>
-    <div class="lang" role="group" aria-label="Language">
-      <button id="lang-en" class="on">EN</button><button id="lang-zh">中</button>
-    </div>
-    <a class="gh" href="https://github.com/kanghelyu/agent-flow" target="_blank" rel="noreferrer" data-i18n="nav-gh">GitHub ↗</a>
-  </div>
-</header>
-
-<section class="hero" style="border-top:none">
-  <div class="wrap hero-l" style="padding:0 24px">
-    <div class="kicker" data-i18n="hero-kicker">Markdown · Logic gates · Any agent</div>
-    <h1 data-i18n-html="hero-h1">The plan belongs on <span class="t">disk</span>,<br>not in the chat.</h1>
-    <p class="lead" data-i18n="hero-lead">AgentFlow turns long agent sessions into step-by-step Markdown workflows with deterministic Boolean gates — plus a visual Studio canvas and a floating desktop pet. Zero dependencies. Any agent. Three platforms.</p>
-    <div class="cta">
-      <a class="btn" href="#install" data-i18n="hero-cta1">Get started</a>
-      <a class="btn ghost" href="https://github.com/kanghelyu/agent-flow" target="_blank" rel="noreferrer" data-i18n="hero-cta2">View on GitHub</a>
-    </div>
-    <div class="agents">
-      <span data-i18n="works-with">works with</span>
-      <span>ZCode</span><span>Claude Code</span><span>Codex CLI</span><span>DeepSeek Harness</span><span>shell</span>
-    </div>
-  </div>
-  <div class="wrap hero-r" style="padding:0 24px">
-    <div class="term">
-      <div class="tbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="t">af — zsh</span></div>
-      <div class="tbody" id="term"></div>
-    </div>
-  </div>
-</section>
-
-<section id="why">
-  <div class="wrap">
-    <h2><span class="n">01</span><span data-i18n="why-h">Why AgentFlow</span></h2>
-    <p class="sub" data-i18n="why-sub">Agents lose the plot on long tasks: plans live in ephemeral chat context, progress is "trust me", and branching is a prompt. AgentFlow keeps all three on disk — reviewable, diffable, provable.</p>
-    <div class="cards">
-      <div class="card"><div class="ic">📝</div><h3 data-i18n="why-1-t">Markdown is the source of truth</h3><p data-i18n="why-1-d">Every step is a STEP.md you can read, edit and commit. flow.json is derived metadata, never a lock-in database.</p></div>
-      <div class="card"><div class="ic">⚡</div><h3 data-i18n="why-2-t">Deterministic gates</h3><p data-i18n="why-2-d">Eight Boolean gate types with strict predicates. Branching is decided by a truth table a static validator can prove — not by an LLM vibe check.</p></div>
-      <div class="card"><div class="ic">🧭</div><h3 data-i18n="why-3-t">Execution bookkeeping</h3><p data-i18n="why-3-d">next / done / undo / status give session-less agents an explicit sense of progress. Blocked and ready steps are computed, not guessed.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="gates">
-  <div class="wrap">
-    <h2><span class="n">02</span><span data-i18n="gates-h">Logic gates, hard rules</span></h2>
-    <p class="sub" data-i18n="gates-sub">Predicates are restricted to truthy / falsy / nonEmpty — never natural language. Upstream steps output booleans; gates route them.</p>
-    <div class="gategrid">
-      <div class="gates">
-        <div class="gate"><div class="n">ifElse</div><div class="f">in ? Y : N</div><div class="d" data-i18n="g-ifelse">one input; routes by truth</div></div>
-        <div class="gate"><div class="n">and</div><div class="f">a ∧ b</div><div class="d" data-i18n="g-and">≥2 inputs; all true</div></div>
-        <div class="gate"><div class="n">or</div><div class="f">a ∨ b</div><div class="d" data-i18n="g-or">≥2 inputs; any true</div></div>
-        <div class="gate"><div class="n">not</div><div class="f">¬a</div><div class="d" data-i18n="g-not">one input; inverts</div></div>
-        <div class="gate"><div class="n">nand</div><div class="f">¬(a ∧ b)</div><div class="d" data-i18n="g-nand">and, inverted</div></div>
-        <div class="gate"><div class="n">nor</div><div class="f">¬(a ∨ b)</div><div class="d" data-i18n="g-nor">or, inverted</div></div>
-        <div class="gate"><div class="n">xor</div><div class="f">a ⊕ b</div><div class="d" data-i18n="g-xor">odd count of trues</div></div>
-        <div class="gate"><div class="n">xnor</div><div class="f">¬(a ⊕ b)</div><div class="d" data-i18n="g-xnor">even count of trues</div></div>
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <div class="nav-shell">
+    <header class="nav" id="nav">
+      <a class="brand" href="#top" aria-label="AgentFlow home"><span class="brand-mark">af</span><span class="brand-word">AgentFlow</span></a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#features"><span class="lang-en">Features</span><span class="lang-zh">能力</span></a>
+        <a href="#studio">Studio</a>
+        <a href="#runtime">Runtime</a>
+        <a href="#pet"><span class="lang-en">Desktop pet</span><span class="lang-zh">桌面宠物</span></a>
+        <a href="#install"><span class="lang-en">Install</span><span class="lang-zh">安装</span></a>
+      </nav>
+      <div class="nav-actions">
+        <button class="nav-control lang" id="langBtn" aria-label="Switch language">中 / EN</button>
+        <button class="nav-control" id="themeBtn" aria-label="Switch color theme">◐</button>
+        <a class="nav-control github-btn" href="https://github.com/kanghelyu/agent-flow" target="_blank" rel="noreferrer" aria-label="Open AgentFlow on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .7a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2.23c-3.22.7-3.9-1.37-3.9-1.37-.52-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.38.97.1-.75.4-1.27.74-1.56-2.57-.29-5.27-1.29-5.27-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.05 0 0 .97-.31 3.16 1.18A11 11 0 0 1 12 6.12c.98 0 1.95.13 2.86.39 2.2-1.49 3.16-1.18 3.16-1.18.63 1.58.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.4-2.71 5.38-5.29 5.67.42.36.79 1.07.79 2.16v3.25c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg><span>GitHub</span>
+        </a>
+        <button class="nav-control menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
       </div>
-      <div class="truth"><span class="p" style="color:var(--green)">$</span> af evaluate release-check --values '{"approved":true,"tests_pass":true}'
-<span class="k">gates</span>:
-  review-if   ifElse  (approved=<b>true</b>)     → <span class="on">THEN branch</span>
-  ship-and    and     (approved, tests_pass)      → <span class="on">PROPAGATES</span>
-  hotfix-nor  nor     (approved, tests_pass)      → blocked ✓
-<span class="k">active targets</span>: <span class="on">publish, tag-release</span></div>
-    </div>
+    </header>
   </div>
-</section>
 
-<section id="studio">
-  <div class="wrap">
-    <h2><span class="n">03</span><span data-i18n="studio-h">Studio — a canvas over your files</span></h2>
-    <p class="sub" data-i18n="studio-sub">af studio serves an interactive canvas on 127.0.0.1. Drag nodes, connect edges, pick branches, edit STEP.md inline — while the agent edits the same files in your terminal, the canvas refreshes live over SSE.</p>
-    <div class="tabs" id="shotTabs">
-      <button class="on" data-shot="en-light">EN · Light</button>
-      <button data-shot="en-dark">EN · Dark</button>
-      <button data-shot="en-logic">Gate evaluation</button>
-      <button data-shot="zh-light">中文 · 浅色</button>
-      <button data-shot="zh-dark">中文 · 暗色</button>
-      <button data-shot="zh-logic">门求值</button>
-    </div>
-    <div class="shot"><img id="shotImg" src="shots/en-light.png" alt="AgentFlow Studio canvas"></div>
-    <p class="cap" data-i18n="studio-cap">Bilingual UI and light/dark themes built in; every topology change is validated before it touches disk.</p>
-  </div>
-</section>
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="stagger">
+          <div class="version-pill"><span class="live"></span><b>AgentFlow v0.2.3</b><span>MIT · local-first</span></div>
+          <h1>
+            <span class="lang-en">Give coding agents<br><span class="gradient">a memory made of workflows.</span></span>
+            <span class="lang-zh">给编码 Agent<br><span class="gradient">一份由工作流构成的记忆。</span></span>
+          </h1>
+          <p class="hero-copy lang-en">AgentFlow turns long, fragile sessions into reviewable <strong>Markdown workflows</strong> with a deterministic runtime, visual Studio, and an optional desktop pet — portable across agents and operating systems.</p>
+          <p class="hero-copy lang-zh">AgentFlow 把漫长、脆弱的 Agent 会话变成可审查的 <strong>Markdown 工作流</strong>：确定性 Runtime、可视化 Studio、可选桌面宠物，并且可以跨 Agent、跨系统使用。</p>
+          <div class="actions">
+            <a class="btn primary" href="#install"><span class="lang-en">Install AgentFlow</span><span class="lang-zh">安装 AgentFlow</span><span>→</span></a>
+            <a class="btn secondary" href="#studio"><span class="lang-en">Explore Studio</span><span class="lang-zh">看看 Studio</span></a>
+          </div>
+          <div class="hero-note"><span></span><div><span class="lang-en">Node.js 18+ · macOS / Windows / Linux · no hosted service required</span><span class="lang-zh">Node.js 18+ · macOS / Windows / Linux · 不依赖托管服务</span></div></div>
+        </div>
 
-<section id="pet">
-  <div class="wrap">
-    <h2><span class="n">04</span><span data-i18n="pet-h">Desktop pet — a pixel cat that watches your flow</span></h2>
-    <div class="petgrid">
-      <div class="petshot"><img src="shots/pet-dark.png" alt="AgentFlow desktop pet pixel cat"></div>
-      <div>
-        <p class="sub" data-i18n="pet-sub" style="margin-bottom:22px">A pixel-art Tuxedo cat lives on your desktop and reflects the current flow state (idle / working / done / error). Right-click for size, coat, play area, low-power mode and more.</p>
-        <ol class="petsteps">
-          <li><b data-i18n="pet-1-b">Three platforms, one command</b> — <span data-i18n="pet-1-d">studio-pet/run-pet.sh on macOS/Linux, run-pet.ps1 or run-pet.cmd on Windows; macOS double-click run-pet.command.</span></li>
-          <li><b data-i18n="pet-2-b">Optional runtime</b> — <span data-i18n="pet-2-d">the pet is optional; the CLI and browser Studio work without Electron. First launch can install the pinned runtime, or point AF_ELECTRON at an existing one.</span></li>
-          <li><b data-i18n="pet-3-b">Status bridge</b> — <span data-i18n="pet-3-d">polls the local Studio every 1.8s and maps flow progress to cat reactions; dragging never raises the Studio window.</span></li>
-          <li><b data-i18n="pet-4-b">No Electron? No problem</b> — <span data-i18n="pet-4-d">everything except the floating window works in any browser via af studio, on macOS, Linux and Windows.</span></li>
-        </ol>
+        <div class="flow-demo reveal" id="flowDemo">
+          <div class="float-badge a"><strong>8 gates</strong><br>IF · AND · XOR · …</div>
+          <div class="float-badge b"><strong>READY only</strong><br><span class="lang-en">runtime decides</span><span class="lang-zh">Runtime 确定下一步</span></div>
+          <div class="demo-window" id="demoWindow">
+            <div class="demo-top"><span class="traffic"><i></i><i></i><i></i></span><span class="title">release-flow / Studio</span><span class="sync"><i></i>Agent synced · rev 12</span></div>
+            <div class="demo-canvas">
+              <svg class="edge-svg" viewBox="0 0 600 500" preserveAspectRatio="none" aria-hidden="true">
+                <defs><linearGradient id="edgeGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#74e996"/><stop offset="1" stop-color="#71dcea"/></linearGradient></defs>
+                <path class="edge-line" d="M120 125 C190 125 200 125 265 125"/><path class="edge-line" d="M355 125 C420 125 430 125 500 125"/><path class="edge-line" d="M500 160 C500 235 470 285 445 320"/><path class="edge-line" d="M500 160 C485 230 370 250 275 320"/><path class="edge-line" d="M230 350 C145 320 140 170 120 150"/>
+              </svg>
+              <div class="mini-node plan"><small>AGENT</small><b>Prepare release</b><span>01-prepare/STEP.md</span></div>
+              <div class="mini-node build"><small>AGENT</small><b>Run tests</b><span>02-tests/STEP.md</span></div>
+              <div class="mini-node gate"><small>CONDITION · IF</small><b>Tests pass?</b><span>predicate: truthy</span></div>
+              <div class="mini-node fix"><small>AGENT</small><b>Fix failures</b><span>03-fix/STEP.md</span></div>
+              <div class="mini-node ship"><small>OUTPUT</small><b>Publish</b><span>04-publish/STEP.md</span></div>
+              <span class="branch-tag yes">Yes</span><span class="branch-tag no">No · retry</span>
+              <div class="demo-status"><span class="ready">● READY</span><span>02-tests</span><span class="t-muted">→ read STEP.md → do work → af done</span><span class="rev">flowRevision 12</span></div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section id="install">
-  <div class="wrap">
-    <h2><span class="n">05</span><span data-i18n="inst-h">Install in one line</span></h2>
-    <p class="sub" data-i18n="inst-sub">Pure Node ESM, zero dependencies, Node ≥ 18. The installer also drops the agent skill into detected skill directories.</p>
-    <div class="inst">
-      <div class="row"><span class="os">macOS / Linux</span><code id="c1">bash install.sh</code><button class="copy" data-copy="c1" data-i18n="copy">copy</button></div>
-      <div class="row"><span class="os">Windows</span><code id="c2">powershell -ExecutionPolicy Bypass -File install.ps1</code><button class="copy" data-copy="c2" data-i18n="copy">copy</button></div>
-      <div class="row"><span class="os" data-i18n="from-source">from source</span><code id="c3">git clone https://github.com/kanghelyu/agent-flow && cd agent-flow</code><button class="copy" data-copy="c3" data-i18n="copy">copy</button></div>
-    </div>
-    <p class="note" data-i18n="inst-note">Storage: ~/.agent-flow (override with AF_HOME). Per-project flows: --root .af — commit the Markdown, ignore state.json.</p>
-  </div>
-</section>
+    <section class="compat-shell" aria-label="Supported agents and systems">
+      <div class="compat-title"><span class="lang-en">One workflow layer · many coding agents · every desktop OS</span><span class="lang-zh">一层工作流 · 多种编码 Agent · 三大桌面系统</span></div>
+      <div class="marquee">
+        <div class="marquee-set">
+          <div class="agent-chip"><span class="agent-icon">Z</span><b>ZCode</b></div><div class="agent-chip"><span class="agent-icon">C</span><b>Claude Code</b></div><div class="agent-chip"><span class="agent-icon">CX</span><b>Codex CLI</b></div><div class="agent-chip"><span class="agent-icon">↗</span><b>Cursor</b></div><div class="agent-chip"><span class="agent-icon">W</span><b>Windsurf</b></div><div class="agent-chip"><span class="agent-icon">$_</span><b>Any shell agent</b></div><div class="agent-chip"><span class="agent-icon">⌘</span><b>macOS</b></div><div class="agent-chip"><span class="agent-icon">⊞</span><b>Windows</b></div><div class="agent-chip"><span class="agent-icon">◉</span><b>Linux</b></div>
+        </div>
+        <div class="marquee-set" aria-hidden="true">
+          <div class="agent-chip"><span class="agent-icon">Z</span><b>ZCode</b></div><div class="agent-chip"><span class="agent-icon">C</span><b>Claude Code</b></div><div class="agent-chip"><span class="agent-icon">CX</span><b>Codex CLI</b></div><div class="agent-chip"><span class="agent-icon">↗</span><b>Cursor</b></div><div class="agent-chip"><span class="agent-icon">W</span><b>Windsurf</b></div><div class="agent-chip"><span class="agent-icon">$_</span><b>Any shell agent</b></div><div class="agent-chip"><span class="agent-icon">⌘</span><b>macOS</b></div><div class="agent-chip"><span class="agent-icon">⊞</span><b>Windows</b></div><div class="agent-chip"><span class="agent-icon">◉</span><b>Linux</b></div>
+        </div>
+      </div>
+    </section>
 
-<footer>
-  <div class="wrap fbar">
-    <span>✦ agent-flow</span>
-    <a href="https://github.com/kanghelyu/agent-flow" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://github.com/kanghelyu/agent-flow/blob/main/README.zh-CN.md" target="_blank" rel="noreferrer">中文文档</a>
-    <a href="https://github.com/kanghelyu/dsh-deepseek-flow" target="_blank" rel="noreferrer">DeepSeek Flow</a>
-    <a href="https://kanghelyu.github.io/" target="_blank" rel="noreferrer">kanghelyu</a>
-    <span style="margin-left:auto">MIT · 2026</span>
-  </div>
-</footer>
-</main>
+    <section class="section" id="features">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><div class="eyebrow">Why AgentFlow</div><h2 class="display"><span class="lang-en">Make agent work<br>visible and durable.</span><span class="lang-zh">让 Agent 的工作<br>可见、可验、可继续。</span></h2></div>
+          <p class="lede lang-en">The agent still does the actual work. AgentFlow supplies the durable structure around it: files you can inspect, state you can resume, and branching rules that do not depend on an LLM “feeling right.”</p>
+          <p class="lede lang-zh">真正执行任务的仍然是 Agent。AgentFlow 提供的是它外面的确定性结构：可以检查的文件、可以恢复的状态，以及不靠模型“感觉”来判断的分支规则。</p>
+        </div>
 
-<script>
-"use strict";
-/* i18n */
-var I18N = {
-  en: {
-    "nav-why":"Why","nav-gates":"Gates","nav-studio":"Studio","nav-pet":"Pet","nav-install":"Install","nav-gh":"GitHub ↗",
-    "hero-kicker":"Markdown · Logic gates · Any agent",
-    "hero-h1":'The plan belongs on <span class="t">disk</span>,<br>not in the chat.',
-    "hero-lead":"AgentFlow turns long agent sessions into step-by-step Markdown workflows with deterministic Boolean gates — plus a visual Studio canvas and a floating desktop pet. Zero dependencies. Any agent. Three platforms.",
-    "hero-cta1":"Get started","hero-cta2":"View on GitHub","works-with":"works with",
-    "why-h":"Why AgentFlow",
-    "why-sub":'Agents lose the plot on long tasks: plans live in ephemeral chat context, progress is "trust me", and branching is a prompt. AgentFlow keeps all three on disk — reviewable, diffable, provable.',
-    "why-1-t":"Markdown is the source of truth","why-1-d":"Every step is a STEP.md you can read, edit and commit. flow.json is derived metadata, never a lock-in database.",
-    "why-2-t":"Deterministic gates","why-2-d":"Eight Boolean gate types with strict predicates. Branching is decided by a truth table a static validator can prove — not by an LLM vibe check.",
-    "why-3-t":"Execution bookkeeping","why-3-d":"next / done / undo / status give session-less agents an explicit sense of progress. Blocked and ready steps are computed, not guessed.",
-    "gates-h":"Logic gates, hard rules",
-    "gates-sub":"Predicates are restricted to truthy / falsy / nonEmpty — never natural language. Upstream steps output booleans; gates route them.",
-    "g-ifelse":"one input; routes by truth","g-and":"≥2 inputs; all true","g-or":"≥2 inputs; any true","g-not":"one input; inverts",
-    "g-nand":"and, inverted","g-nor":"or, inverted","g-xor":"odd count of trues","g-xnor":"even count of trues",
-    "studio-h":"Studio — a canvas over your files",
-    "studio-sub":"af studio serves an interactive canvas on 127.0.0.1. Drag nodes, connect edges, pick branches, edit STEP.md inline — while the agent edits the same files in your terminal, the canvas refreshes live over SSE.",
-    "studio-cap":"Bilingual UI and light/dark themes built in; every topology change is validated before it touches disk.",
-    "pet-h":"Desktop pet — a pixel cat that watches your flow",
-    "pet-sub":"A pixel-art Tuxedo cat lives on your desktop and reflects the current flow state (idle / working / done / error). Right-click for size, coat, play area, low-power mode and more.",
-    "pet-1-b":"Three platforms, one command","pet-1-d":"studio-pet/run-pet.sh on macOS/Linux, run-pet.ps1 or run-pet.cmd on Windows; macOS double-click run-pet.command.",
-    "pet-2-b":"Optional runtime","pet-2-d":"the pet is optional; the CLI and browser Studio work without Electron. First launch can install the pinned runtime, or point AF_ELECTRON at an existing one.",
-    "pet-3-b":"Status bridge","pet-3-d":"polls the local Studio every 1.8s and maps flow progress to cat reactions; dragging never raises the Studio window.",
-    "pet-4-b":"No Electron? No problem","pet-4-d":"everything except the floating window works in any browser via af studio, on macOS, Linux and Windows.",
-    "inst-h":"Install in one line",
-    "inst-sub":"Pure Node ESM, zero dependencies, Node ≥ 18. The installer also drops the agent skill into detected skill directories.",
-    "from-source":"from source","copy":"copy",
-    "inst-note":"Storage: ~/.agent-flow (override with AF_HOME). Per-project flows: --root .af — commit the Markdown, ignore state.json.",
-    term:[
-      ['p','$ ','af create release-check --steps "lint;tests;changelog;publish"'],
-      ['','  ✦ flow created  flows/release-check  (4 steps)\n'],
-      ['p','$ ','af next release-check'],
-      ['','  → ready: 01-lint   flows/release-check/01-lint/STEP.md\n'],
-      ['p','$ ','af done release-check lint && af evaluate release-check --values \'{"tests_pass":true}\''],
-      ['','  ✓ lint done  1/4\n  gates: ship-and (lint ✓, tests_pass ✓) → PROPAGATES\n  active targets: publish\n'],
-      ['p','$ ','af studio --app   ']
-    ]
-  },
-  zh: {
-    "nav-why":"为什么","nav-gates":"逻辑门","nav-studio":"Studio","nav-pet":"宠物窗","nav-install":"安装","nav-gh":"GitHub ↗",
-    "hero-kicker":"Markdown · 逻辑门 · 任何代理",
-    "hero-h1":'计划应该落在<span class="t">磁盘</span>上，<br>而不是聊天里。',
-    "hero-lead":"AgentFlow 把长任务的代理会话变成分步 Markdown 工作流：确定性布尔门 + 可视化 Studio 画布 + 桌面悬浮宠物窗。零依赖，任何代理，三平台。",
-    "hero-cta1":"开始使用","hero-cta2":"查看 GitHub","works-with":"适用于",
-    "why-h":"为什么需要 AgentFlow",
-    "why-sub":"代理干长任务会「失忆」：计划活在易失的对话上下文里，进度全凭一张嘴，分支逻辑就是一句提示词。AgentFlow 把这三样全部落盘——可审阅、可 diff、可证明。",
-    "why-1-t":"Markdown 唯一事实来源","why-1-d":"每个步骤都是一份可读、可改、可提交的 STEP.md；flow.json 只是派生元数据，不是数据库锁定。",
-    "why-2-t":"确定性逻辑门","why-2-d":"八种布尔门 + 严格谓词。分支走向由静态校验器可证明的真值表决定，绝不由模型临场发挥。",
-    "why-3-t":"执行簿记","why-3-d":"next / done / undo / status 给无会话概念的代理显式的进度感：阻塞与就绪是算出来的，不是猜的。",
-    "gates-h":"逻辑门硬规则",
-    "gates-sub":"谓词只允许 truthy / falsy / nonEmpty——绝不写自然语言。上游步骤输出布尔值，门来路由。",
-    "g-ifelse":"单输入；按真值选分支","g-and":"≥2 输入；全部为真","g-or":"≥2 输入；任一为真","g-not":"单输入；取反",
-    "g-nand":"与门取反","g-nor":"或门取反","g-xor":"真值个数为奇数","g-xnor":"真值个数为偶数",
-    "studio-h":"Studio——盖在你的文件上的画布",
-    "studio-sub":"af studio 在 127.0.0.1 起一个交互画布：拖节点、连线选分支、内联编辑 STEP.md——代理在终端改同一批文件时，画布经 SSE 实时刷新。",
-    "studio-cap":"内置中英双语与浅暗双主题；每次拓扑修改先校验再落盘。",
-    "pet-h":"桌面宠物——一只看着你流程跑的像素猫",
-    "pet-sub":"黑白像素猫常驻桌面，反映当前流程状态（空闲 / 进行中 / 完成 / 出错）。右键菜单可调大小、毛色、游玩区域与节能模式。",
-    "pet-1-b":"三平台一条命令","pet-1-d":"macOS/Linux 用 studio-pet/run-pet.sh，Windows 用 run-pet.ps1 或 run-pet.cmd；macOS 也可双击 run-pet.command。",
-    "pet-2-b":"可选运行时","pet-2-d":"桌宠是可选组件；CLI 与浏览器 Studio 不依赖 Electron。首次启动可安装固定版本，或用 AF_ELECTRON 指定已有运行时。",
-    "pet-3-b":"状态桥","pet-3-d":"每 1.8s 轮询本地 Studio 并把流程进度映射为猫的反应；拖动小宠不会把 Studio 窗口带到前台。",
-    "pet-4-b":"没有 Electron 也能用","pet-4-d":"除悬浮窗外的一切功能走 af studio 浏览器模式，macOS / Linux / Windows 全支持。",
-    "inst-h":"一行安装",
-    "inst-sub":"纯 Node ESM、零依赖、Node ≥ 18。安装器还会把代理技能放进检测到的技能目录。",
-    "from-source":"从源码","copy":"复制",
-    "inst-note":"存储：~/.agent-flow（AF_HOME 覆盖）。项目内工作流：--root .af——提交 Markdown、忽略 state.json。",
-    term:[
-      ['p','$ ','af create release-check --steps "lint;测试;changelog;发布"'],
-      ['','  ✦ 已创建流程  flows/release-check （4 步）\n'],
-      ['p','$ ','af next release-check'],
-      ['','  → 就绪: 01-lint   flows/release-check/01-lint/STEP.md\n'],
-      ['p','$ ','af done release-check lint && af evaluate release-check --values \'{"tests_pass":true}\''],
-      ['','  ✓ lint 完成  1/4\n  门: ship-and (lint ✓, tests_pass ✓) → 传播\n  激活目标: 发布\n'],
-      ['p','$ ','af studio --app   ']
-    ]
-  }
-};
-var lang = localStorage.getItem("af-lang") || (navigator.language && navigator.language.indexOf("zh") === 0 ? "zh" : "en");
+        <div class="bento">
+          <article class="card span7 reveal">
+            <div class="md-stack" aria-hidden="true"><div class="md-sheet"><i></i><i></i><i></i><i></i></div><div class="md-sheet"><i></i><i></i><i></i><i></i></div><div class="md-sheet"><i></i><i></i><i></i><i></i></div></div>
+            <div class="card-icon">MD</div><h3><span class="lang-en">Markdown is the source of truth</span><span class="lang-zh">Markdown 就是真源</span></h3>
+            <p class="lang-en">A master <code>WORKFLOW.md</code> plus one <code>STEP.md</code> workspace per step. Read it, edit it, diff it, commit it. <code>flow.json</code> stays derived metadata.</p>
+            <p class="lang-zh">一个主 <code>WORKFLOW.md</code>，每一步一个 <code>STEP.md</code> 工作区。可读、可改、可 diff、可提交；<code>flow.json</code> 只是派生元数据。</p>
+            <div class="card-kicker">WORKFLOW.md → STEP.md → git</div>
+          </article>
+          <article class="card span5 reveal">
+            <div class="gate-grid" aria-hidden="true"><span class="gate">IF</span><span class="gate">AND</span><span class="gate">OR</span><span class="gate">NOT</span><span class="gate">NAND</span><span class="gate">NOR</span><span class="gate">XOR</span><span class="gate">XNOR</span></div>
+            <div class="card-icon">01</div><h3><span class="lang-en">Deterministic logic gates</span><span class="lang-zh">确定性逻辑门</span></h3>
+            <p class="lang-en">Eight gate types, strict predicates, truth-table semantics and actionable validation. Branches resolve from data — not model vibes.</p>
+            <p class="lang-zh">8 种逻辑门、严格谓词、真值表语义与可操作的校验错误。分支由数据决定，不由模型“猜”。</p>
+          </article>
+          <article class="card span4 reveal">
+            <div class="runtime-lines" aria-hidden="true"><div><b>af next</b> --json</div><div><em>READY</em> implement-fix</div><div><b>af done</b> --result …</div><div class="warn">STALE_WORKFLOW?</div><div>↳ fetch new revision</div></div>
+            <div class="card-icon">RT</div><h3><span class="lang-en">A resumable runtime</span><span class="lang-zh">可恢复的 Runtime</span></h3>
+            <p class="lang-en"><code>next / done / undo / status</code> gives session-less agents explicit progress, while revision fingerprints reject stale submissions.</p>
+            <p class="lang-zh"><code>next / done / undo / status</code> 让无会话 Agent 也拥有明确进度；revision 指纹会拒绝过期提交。</p>
+          </article>
+          <article class="card span4 reveal">
+            <div class="os-row" aria-hidden="true"><span class="os"><i></i>mac</span><span class="os"><i></i>win</span><span class="os"><i></i>linux</span></div>
+            <div class="card-icon">OS</div><h3><span class="lang-en">Cross-platform by design</span><span class="lang-zh">原生跨平台</span></h3>
+            <p class="lang-en"><code>install.sh</code> for macOS/Linux and <code>install.ps1</code> for Windows. The installer discovers and syncs supported agent skill directories.</p>
+            <p class="lang-zh">macOS/Linux 使用 <code>install.sh</code>，Windows 使用 <code>install.ps1</code>；安装器会自动发现并同步常见 Agent 的 skills 目录。</p>
+          </article>
+          <article class="card span4 reveal">
+            <div class="portable-ring" aria-hidden="true"><span>flow.json ⇄</span></div>
+            <div class="card-icon">⇄</div><h3><span class="lang-en">Portable, not hosted</span><span class="lang-zh">可迁移，不托管</span></h3>
+            <p class="lang-en">No model calls, credentials, hosted execution or lock-in database. DeepSeek Flow JSON is interchangeable with AgentFlow.</p>
+            <p class="lang-zh">不接管模型调用、凭据或托管执行，也没有绑定数据库；并兼容 DeepSeek Flow JSON。</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-function applyLang(l){
-  lang = l; localStorage.setItem("af-lang", l);
-  document.documentElement.lang = l === "zh" ? "zh-CN" : "en";
-  document.getElementById("lang-en").classList.toggle("on", l === "en");
-  document.getElementById("lang-zh").classList.toggle("on", l === "zh");
-  var dict = I18N[l];
-  document.querySelectorAll("[data-i18n]").forEach(function(el){
-    var k = el.getAttribute("data-i18n");
-    if (dict[k] != null) el.textContent = dict[k];
-  });
-  document.querySelectorAll("[data-i18n-html]").forEach(function(el){
-    var k = el.getAttribute("data-i18n-html");
-    if (dict[k] != null) el.innerHTML = dict[k];
-  });
-  startTerm();
-}
-document.getElementById("lang-en").addEventListener("click", function(){ applyLang("en"); });
-document.getElementById("lang-zh").addEventListener("click", function(){ applyLang("zh"); });
+    <section class="section" id="studio">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><div class="eyebrow">Visual Studio</div><h2 class="display"><span class="lang-en">See the workflow.<br>Edit it live.</span><span class="lang-zh">看见流程，<br>直接在画布上改。</span></h2></div>
+          <p class="lede lang-en">Create, move, connect, reconnect, label and delete nodes or arrows. Edit Markdown beside the canvas, validate topology, evaluate gates and watch local file changes arrive live.</p>
+          <p class="lede lang-zh">创建、移动、连接、重连、标记、删除节点和箭头；在画布旁直接编辑 Markdown，校验拓扑、计算逻辑门，并实时看到本地文件变化。</p>
+        </div>
+        <div class="studio-controls reveal">
+          <div class="seg" id="shotTheme"><button class="on" data-shot-theme="dark"><span class="lang-en">Dark</span><span class="lang-zh">深色</span></button><button data-shot-theme="light"><span class="lang-en">Light</span><span class="lang-zh">浅色</span></button><button data-shot-theme="logic"><span class="lang-en">Logic demo</span><span class="lang-zh">逻辑演示</span></button></div>
+          <div class="seg"><button class="on" data-shot-lang="en">English</button><button data-shot-lang="zh">中文</button></div>
+          <div class="studio-meta">127.0.0.1:4317 · HTTP + SSE · local only</div>
+        </div>
+        <div class="studio-stage reveal">
+          <div class="feature-float one"><b><span class="lang-en">Markdown beside canvas</span><span class="lang-zh">Markdown 与画布并排</span></b><span><span class="lang-en">Edit STEP.md without leaving Studio.</span><span class="lang-zh">无需离开 Studio 即可编辑 STEP.md。</span></span></div>
+          <div class="feature-float two"><b><span class="lang-en">Deterministic validation</span><span class="lang-zh">确定性校验</span></b><span><span class="lang-en">Topology + gate semantics in one click.</span><span class="lang-zh">一键检查拓扑与逻辑门语义。</span></span></div>
+          <div class="studio-frame">
+            <div class="browser-bar"><i></i><i></i><i></i><div class="browser-url"><span>●</span>127.0.0.1:4317</div></div>
+            <div class="studio-shot" id="studioShot"><img id="studioImg" src="assets/shots/engdark.png" alt="AgentFlow Studio dark theme"></div>
+          </div>
+        </div>
+        <div class="studio-list reveal">
+          <div><b><span class="lang-en">Graph editing</span><span class="lang-zh">图形编辑</span></b><span class="lang-en">Nodes, arrows, reconnect and tidy layout.</span><span class="lang-zh">节点、连线、重连与自动整理布局。</span></div>
+          <div><b><span class="lang-en">Bilingual UI</span><span class="lang-zh">中英双语</span></b><span class="lang-en">Light / dark themes built into Studio.</span><span class="lang-zh">Studio 自带浅色 / 深色主题。</span></div>
+          <div><b><span class="lang-en">Live sync</span><span class="lang-zh">实时同步</span></b><span class="lang-en">Agent file edits refresh through SSE.</span><span class="lang-zh">Agent 修改文件后通过 SSE 刷新画布。</span></div>
+          <div><b><span class="lang-en">Local by default</span><span class="lang-zh">默认只在本机</span></b><span class="lang-en">Studio binds to 127.0.0.1.</span><span class="lang-zh">Studio 默认绑定 127.0.0.1。</span></div>
+        </div>
+      </div>
+    </section>
 
-/* terminal typing */
-var termTimer = null;
-function startTerm(){
-  var term = document.getElementById("term");
-  term.textContent = "";
-  if (termTimer) clearTimeout(termTimer);
-  var lines = I18N[lang].term, li = 0, ci = 0;
-  var caret = document.createElement("span"); caret.className = "caret";
-  function tick(){
-    if (li >= lines.length){ term.appendChild(caret); return; }
-    var cls = lines[li][0], text = lines[li][1];
-    ci++;
-    var shown = text.slice(0, ci);
-    term.textContent = "";
-    // render prefix lines with classes
-    var html = "";
-    for (var i = 0; i < li; i++){
-      html += (lines[i][0] ? '<span class="' + (lines[i][0] === "p" ? "p" : "c") + '">' : "<span>") + esc(lines[i][1]) + "</span>";
-    }
-    html += (cls ? '<span class="' + cls + '">' : "<span>") + esc(shown) + "</span>";
-    term.innerHTML = html;
-    term.appendChild(caret);
-    if (ci >= text.length){ li++; ci = 0; termTimer = setTimeout(tick, cls ? 340 : 150); }
-    else termTimer = setTimeout(tick, cls ? 26 : 13);
-  }
-  function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-  tick();
-}
+    <section class="section" id="runtime">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><div class="eyebrow">Execution runtime</div><h2 class="display"><span class="lang-en">The agent works.<br>The runtime keeps score.</span><span class="lang-zh">Agent 负责干活，<br>Runtime 负责不走偏。</span></h2></div>
+          <p class="lede lang-en">AgentFlow does not become another agent. It compiles the latest workflow, exposes only READY nodes, resolves conditions and merges, records results, skips inactive paths, and keeps the next batch explicit.</p>
+          <p class="lede lang-zh">AgentFlow 不会变成另一个 Agent。它编译最新工作流，只返回 READY 节点，自动处理 Condition / Merge，记录结果、跳过无效路径，并明确给出下一批任务。</p>
+        </div>
+        <div class="runtime-grid">
+          <div class="terminal reveal">
+            <div class="termbar"><i></i><i></i><i></i><span>agentflow — runtime</span></div>
+            <div class="termcode">
+              <div><span class="t-prompt">$</span> af next release-flow --json</div>
+              <div class="t-muted">{ flowRevision: 12,</div>
+              <div>  ready: [<span class="t-cyan">"run-tests"</span>],</div>
+              <div>  skipped: [], gates: {...} }</div><br>
+              <div><span class="t-prompt">$</span> <span class="t-muted"># agent reads 02-run-tests/STEP.md</span></div>
+              <div><span class="t-prompt">$</span> af done release-flow run-tests \</div>
+              <div>    --result <span class="t-amber">'{"ok":false,"failures":2}'</span> \</div>
+              <div>    --revision 12</div>
+              <div class="t-ok">✓ result saved · condition resolved false</div>
+              <div class="t-ok">✓ activated: fix-failures · skipped: publish</div><br>
+              <div><span class="t-prompt">$</span> af next release-flow</div>
+              <div><span class="t-cyan">READY</span> fix-failures</div>
+              <div class="t-muted">explicit loop · max attempts documented</div><br>
+              <div><span class="t-prompt">$</span> af status release-flow <span class="cursor"></span></div>
+            </div>
+          </div>
+          <div class="runtime-points reveal">
+            <article class="runtime-point"><strong>→</strong><h3><span class="lang-en">Only READY work</span><span class="lang-zh">只返回 READY 任务</span></h3><p class="lang-en"><code>af next</code> computes what can execute now instead of asking the agent to infer dependencies.</p><p class="lang-zh"><code>af next</code> 直接计算当前可执行项，不让 Agent 自己猜依赖关系。</p></article>
+            <article class="runtime-point"><strong>✓</strong><h3><span class="lang-en">Structured results</span><span class="lang-zh">结构化结果</span></h3><p class="lang-en"><code>af done --result</code> persists outcomes and resolves downstream conditions automatically.</p><p class="lang-zh"><code>af done --result</code> 持久化结果，并自动解析后续条件。</p></article>
+            <article class="runtime-point"><strong>↺</strong><h3><span class="lang-en">Explicit control loops</span><span class="lang-zh">显式控制循环</span></h3><p class="lang-en">Retry flows are allowed when the exit condition, attempt limit or manual stop is documented.</p><p class="lang-zh">只要写明退出条件、最大次数或手动停止机制，就可以安全建模重试循环。</p></article>
+            <article class="runtime-point"><strong>FP</strong><h3><span class="lang-en">Stale-work protection</span><span class="lang-zh">防止过期提交</span></h3><p class="lang-en">Revision + execution fingerprints reject work completed against an outdated upstream graph.</p><p class="lang-zh">revision + execution fingerprint 会拒绝基于旧上游流程完成的过期结果。</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
 
-/* gallery tabs */
-document.getElementById("shotTabs").addEventListener("click", function(e){
-  var b = e.target.closest("button"); if (!b) return;
-  this.querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x === b); });
-  document.getElementById("shotImg").src = "shots/" + b.getAttribute("data-shot") + ".png";
-});
+    <section class="section" id="pet">
+      <div class="wrap">
+        <div class="pet-panel reveal">
+          <div class="pet-visual">
+            <img class="pet-img" src="assets/shots/peticon.png" alt="PixelPets tuxedo cat integrated with AgentFlow" loading="lazy">
+            <div class="pet-status"><i id="petDot"></i><span id="petStatus">working · flow 3/5</span></div>
+          </div>
+          <div class="pet-copy">
+            <div class="eyebrow">Optional desktop pet · powered by PixelPets</div>
+            <h2><span class="lang-en">Your flow status,<br>with a PixelPets companion.</span><span class="lang-zh">让 PixelPets<br>陪你看流程状态。</span></h2>
+            <p class="lang-en">AgentFlow integrates the open-source <strong>PixelPets</strong> desktop pet with local Studio status, so it can react to <strong>idle / working / done / error</strong>. The pet itself is not an AgentFlow original and remains completely optional.</p>
+            <p class="lang-zh">AgentFlow 将开源桌宠 <strong>PixelPets</strong> 与本地 Studio 状态进行集成，让它可以响应 <strong>idle / working / done / error</strong>。桌宠本体并非 AgentFlow 原创，并且始终是完全可选的。</p>
+            <div class="pet-features"><span>PixelPets integration</span><span>flow status</span><span>optional</span><span>always on top</span><span>play area</span><span>中 / EN</span></div>
+            <p class="pet-credit lang-en"><strong>Credit:</strong> Desktop pet powered by <a href="https://github.com/JOhnsonKC201/pixelpets" target="_blank" rel="noreferrer">PixelPets</a>, created by <a href="https://github.com/JOhnsonKC201" target="_blank" rel="noreferrer">JOhnsonKC201</a> and released under the MIT License. AgentFlow provides the workflow-status integration.</p>
+            <p class="pet-credit lang-zh"><strong>致谢：</strong>桌宠由 <a href="https://github.com/JOhnsonKC201/pixelpets" target="_blank" rel="noreferrer">PixelPets</a> 提供，原项目由 <a href="https://github.com/JOhnsonKC201" target="_blank" rel="noreferrer">JOhnsonKC201</a> 创作并以 MIT License 开源；AgentFlow 提供工作流状态集成。</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-/* copy buttons */
-document.querySelectorAll(".copy").forEach(function(btn){
-  btn.addEventListener("click", function(){
-    var text = document.getElementById(btn.getAttribute("data-copy")).textContent;
-    if (navigator.clipboard) navigator.clipboard.writeText(text);
-    var old = btn.textContent; btn.textContent = "✓";
-    setTimeout(function(){ btn.textContent = old; }, 1200);
-  });
-});
+    <section class="section" id="install">
+      <div class="wrap install-grid">
+        <div class="install-lead reveal">
+          <div class="eyebrow">Install</div>
+          <h2 class="display"><span class="lang-en">The easiest install<br>is to ask your agent.</span><span class="lang-zh">最省事的安装方式：<br>直接交给你的 Agent。</span></h2>
+          <p class="lang-en">Give the repository URL to a coding agent that can run shell commands. It can clone AgentFlow, run the platform installer, sync the skill directories and verify everything with <code>af doctor</code>.</p>
+          <p class="lang-zh">把仓库地址发给任何能执行 shell 的编码 Agent。它可以自己 clone、运行对应系统的安装器、同步 skills，并用 <code>af doctor</code> 完成验证。</p>
+          <div class="install-checks">
+            <div class="install-check"><i>✓</i><span><span class="lang-en">No plugin marketplace or harness-specific package required.</span><span class="lang-zh">不需要插件市场，也不需要为每个 Agent 单独打包。</span></span></div>
+            <div class="install-check"><i>✓</i><span><span class="lang-en">Existing flows under <code>~/.agent-flow/flows</code> survive reinstall/update.</span><span class="lang-zh">重新安装 / 更新不会删除 <code>~/.agent-flow/flows</code> 中的现有流程。</span></span></div>
+            <div class="install-check"><i>✓</i><span><span class="lang-en">Default Studio address: <code>127.0.0.1:4317</code>.</span><span class="lang-zh">Studio 默认地址：<code>127.0.0.1:4317</code>。</span></span></div>
+          </div>
+        </div>
 
-applyLang(lang);
-</script>
+        <div class="install-card reveal">
+          <div class="install-tabs">
+            <button class="install-tab on" data-install="agent"><span class="lang-en">Ask your agent</span><span class="lang-zh">让 Agent 安装</span></button>
+            <button class="install-tab" data-install="unix">macOS / Linux</button>
+            <button class="install-tab" data-install="win">Windows</button>
+            <button class="install-tab" data-install="pet"><span class="lang-en">Desktop pet</span><span class="lang-zh">桌面宠物</span></button>
+          </div>
+          <div class="install-pane">
+            <h3 id="installTitle">Paste this repository into your coding agent</h3>
+            <p id="installDesc">Ask it to install AgentFlow and verify the installation. The repository contains both platform installers.</p>
+            <div id="agentInstall">
+              <div class="repo-copy"><code id="repoUrl">https://github.com/kanghelyu/agent-flow</code><button class="copy-btn" data-copy-target="repoUrl">Copy</button></div>
+              <div class="agent-prompt" id="agentPrompt">Prompt: “Install AgentFlow from this repository and run af doctor when you’re done.”</div>
+            </div>
+            <div id="codeInstall" hidden>
+              <div class="codebox"><div class="codehead"><span id="codeLabel">Terminal</span><button class="copy-btn" data-copy-target="installCode">Copy</button></div><pre id="installCode"></pre></div>
+            </div>
+            <div class="requirements"><span>Node.js ≥ 18</span><span>npm</span><span>MIT</span><span>local-first</span><span>zero CLI deps</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-tight">
+      <div class="wrap">
+        <div class="cta reveal">
+          <div><div class="eyebrow">Open source · MIT</div><h2><span class="lang-en">Your workflow should<br>outlive your chat.</span><span class="lang-zh">让工作流，<br>比一次对话活得更久。</span></h2><p><span class="lang-en">Readable on disk. Deterministic in logic. Portable across agents.</span><span class="lang-zh">磁盘上可读，逻辑上确定，Agent 之间可迁移。</span></p></div>
+          <div class="actions"><a class="btn primary" href="https://github.com/kanghelyu/agent-flow" target="_blank" rel="noreferrer"><span class="lang-en">View source on GitHub</span><span class="lang-zh">在 GitHub 查看源码</span><span>↗</span></a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-row"><div><b style="color:var(--text)">AgentFlow</b> <span class="mono">af</span> · v0.2.3 · MIT<br><span style="font-size:11px;color:var(--subtle)">Desktop pet: <a href="https://github.com/JOhnsonKC201/pixelpets" target="_blank" rel="noreferrer">PixelPets by JOhnsonKC201</a> · MIT</span></div><div class="footer-links"><a href="https://github.com/kanghelyu/agent-flow" target="_blank" rel="noreferrer">Repository</a><a href="https://github.com/JOhnsonKC201/pixelpets" target="_blank" rel="noreferrer">PixelPets</a><a href="#studio">Studio</a><a href="#runtime">Runtime</a><a href="#install">Install</a></div></div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot viewer"><button id="lbClose" aria-label="Close screenshot">×</button><img id="lbImg" alt=""></div>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const savedTheme = localStorage.getItem('af-theme');
+      root.dataset.theme = savedTheme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      const savedLang = localStorage.getItem('af-lang');
+      const browserZh = /^zh/i.test(navigator.language || '');
+      root.dataset.lang = savedLang || (browserZh ? 'zh' : 'en');
+      root.lang = root.dataset.lang === 'zh' ? 'zh-CN' : 'en';
+
+      const nav = document.getElementById('nav');
+      const menuBtn = document.getElementById('menuBtn');
+      menuBtn.addEventListener('click', () => nav.classList.toggle('open'));
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+
+      document.getElementById('themeBtn').addEventListener('click', () => {
+        root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('af-theme', root.dataset.theme);
+      });
+      document.getElementById('langBtn').addEventListener('click', () => {
+        root.dataset.lang = root.dataset.lang === 'en' ? 'zh' : 'en';
+        root.lang = root.dataset.lang === 'zh' ? 'zh-CN' : 'en';
+        localStorage.setItem('af-lang', root.dataset.lang);
+        syncInstallView();
+      });
+
+      const progress = document.getElementById('scrollProgress');
+      const updateScroll = () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        progress.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+        nav.classList.toggle('scrolled', scrollY > 20);
+      };
+      addEventListener('scroll', updateScroll, {passive:true}); updateScroll();
+
+      if(!reduceMotion){
+        let tx=50,ty=20,cx=50,cy=20,raf=0;
+        addEventListener('pointermove', e => {tx=e.clientX/innerWidth*100;ty=e.clientY/innerHeight*100;if(!raf) raf=requestAnimationFrame(tick)}, {passive:true});
+        function tick(){cx+=(tx-cx)*.1;cy+=(ty-cy)*.1;document.body.style.setProperty('--mx',cx+'%');document.body.style.setProperty('--my',cy+'%');raf=0;if(Math.abs(tx-cx)>.08||Math.abs(ty-cy)>.08) raf=requestAnimationFrame(tick)}
+        const demo = document.getElementById('flowDemo'), win = document.getElementById('demoWindow');
+        demo.addEventListener('pointermove', e => {const r=demo.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;win.style.transform=`rotateY(${x*4.5}deg) rotateX(${-y*3.5}deg) translateY(-2px)`});
+        demo.addEventListener('pointerleave',()=>win.style.transform='');
+      }
+
+      const ro = new IntersectionObserver(entries => entries.forEach(e => {if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}}), {threshold:.11});
+      document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+      const shotState = {theme:'dark',lang:'en'};
+      const shotMap = {dark:{en:'assets/shots/engdark.png',zh:'assets/shots/cndark.png'},light:{en:'assets/shots/englight.png',zh:'assets/shots/cnlight.png'},logic:{en:'assets/shots/englogic.png',zh:'assets/shots/cnlogic.png'}};
+      const studioImg = document.getElementById('studioImg');
+      function syncShot(){studioImg.src=shotMap[shotState.theme][shotState.lang];studioImg.alt=`AgentFlow Studio ${shotState.theme} ${shotState.lang}`}
+      document.querySelectorAll('[data-shot-theme]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-shot-theme]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');shotState.theme=btn.dataset.shotTheme;syncShot()}));
+      document.querySelectorAll('[data-shot-lang]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-shot-lang]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');shotState.lang=btn.dataset.shotLang;syncShot()}));
+
+      const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg');
+      document.getElementById('studioShot').addEventListener('click',()=>{lbImg.src=studioImg.src;lbImg.alt=studioImg.alt;lb.classList.add('open');document.body.style.overflow='hidden'});
+      const closeLb=()=>{lb.classList.remove('open');document.body.style.overflow=''};
+      document.getElementById('lbClose').addEventListener('click',closeLb);lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
+
+      const installs={
+        unix:{label:'Terminal',titleEn:'Install on macOS / Linux',titleZh:'在 macOS / Linux 安装',descEn:'Run from the AgentFlow source or extracted directory.',descZh:'在 AgentFlow 源码或解压目录中运行。',code:`bash install.sh\naf --version\naf doctor\naf studio`},
+        win:{label:'PowerShell',titleEn:'Install on Windows',titleZh:'在 Windows 安装',descEn:'Run in PowerShell from the AgentFlow source directory.',descZh:'在 AgentFlow 源码目录的 PowerShell 中运行。',code:`Set-ExecutionPolicy -Scope Process Bypass\n.\\install.ps1\naf --version\naf doctor\naf studio`},
+        pet:{label:'Desktop pet · PixelPets',titleEn:'Start the optional PixelPets integration',titleZh:'启动可选 PixelPets 桌宠集成',descEn:'Powered by the PixelPets project by JOhnsonKC201. Start Studio first; AgentFlow connects flow status to the pet.',descZh:'桌宠由 JOhnsonKC201 的 PixelPets 项目提供。请先启动 Studio；AgentFlow 会将工作流状态连接到桌宠。',code:`# macOS / Linux\n~/.agent-flow/studio-pet/run-pet.sh\n\n# Windows PowerShell\n& "$HOME\\.agent-flow\\studio-pet\\run-pet.ps1"`}
+      };
+      const agentInstall=document.getElementById('agentInstall'),codeInstall=document.getElementById('codeInstall'),installCode=document.getElementById('installCode'),installTitle=document.getElementById('installTitle'),installDesc=document.getElementById('installDesc'),codeLabel=document.getElementById('codeLabel');
+      let currentInstall='agent';
+      function syncInstallCopy(){
+        const zh=root.dataset.lang==='zh';
+        document.getElementById('agentPrompt').textContent=zh?'提示词：“从这个仓库安装 AgentFlow，完成后运行 af doctor 验证。”':'Prompt: “Install AgentFlow from this repository and run af doctor when you’re done.”';
+        document.querySelectorAll('.copy-btn').forEach(b=>{if(!b.dataset.copied)b.textContent=zh?'复制':'Copy'});
+      }
+      function syncInstallView(){
+        const key=currentInstall;
+        if(key==='agent'){
+          agentInstall.hidden=false;codeInstall.hidden=true;
+          installTitle.textContent=root.dataset.lang==='zh'?'把这个仓库地址发给你的编码 Agent':'Paste this repository into your coding agent';
+          installDesc.textContent=root.dataset.lang==='zh'?'让它安装 AgentFlow 并完成验证。仓库里已经包含两个平台安装器。':'Ask it to install AgentFlow and verify the installation. The repository contains both platform installers.';
+        }else{
+          const d=installs[key];agentInstall.hidden=true;codeInstall.hidden=false;installCode.textContent=d.code;codeLabel.textContent=d.label;installTitle.textContent=root.dataset.lang==='zh'?d.titleZh:d.titleEn;installDesc.textContent=root.dataset.lang==='zh'?d.descZh:d.descEn;
+        }
+        syncInstallCopy();
+      }
+      document.querySelectorAll('[data-install]').forEach(btn=>btn.addEventListener('click',()=>{
+        document.querySelectorAll('[data-install]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');currentInstall=btn.dataset.install;syncInstallView();
+      }));
+      document.querySelectorAll('[data-copy-target]').forEach(btn=>btn.addEventListener('click',async()=>{const el=document.getElementById(btn.dataset.copyTarget);const text=el.value||el.textContent;try{await navigator.clipboard.writeText(text);btn.dataset.copied='1';btn.textContent=root.dataset.lang==='zh'?'已复制':'Copied';setTimeout(()=>{delete btn.dataset.copied;syncInstallCopy()},1200)}catch{const range=document.createRange();range.selectNodeContents(el);const sel=getSelection();sel.removeAllRanges();sel.addRange(range)}}));
+      syncInstallView();
+
+      if(!reduceMotion){
+        const states=[['working · flow 3/5','#5ee883'],['done · flow 5/5','#7de8f5'],['idle · waiting','#93a89a'],['working · flow 1/4','#5ee883']];let i=0;
+        setInterval(()=>{i=(i+1)%states.length;document.getElementById('petStatus').textContent=states[i][0];document.getElementById('petDot').style.background=states[i][1]},2600);
+      }
+    })();
+  </script>
 </body>
 </html>
